@@ -1,0 +1,162 @@
+
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Chi tiết bài viết - Tin Mới</title>
+  <script src="/js/auth-nav.js" defer></script>
+  <link rel="stylesheet" href="/css/style.css">
+  <style>
+    .admin-article-tools{display:flex;gap:10px;flex-wrap:wrap;margin:14px 0 20px}.admin-article-link,.admin-article-delete{border:1px solid #0b7657;border-radius:8px;padding:8px 12px;background:#fff;color:#0b7657;font:inherit;text-decoration:none;cursor:pointer}.admin-article-delete{border-color:#b42318;color:#b42318}.admin-article-delete:disabled{opacity:.6;cursor:wait}
+  </style>
+
+  <style>
+    .article-detail {
+      max-width: 850px;
+      margin: 40px auto 64px;
+      padding: 32px;
+      background: #fff;
+      border: 1px solid #e0e7e3;
+      border-radius: 16px;
+    }
+
+    .article-detail .back-link {
+      display: inline-block;
+      margin-bottom: 24px;
+      color: #087354;
+      text-decoration: none;
+      font-weight: 700;
+    }
+
+    .article-detail .article-category {
+      color: #087354;
+      font-weight: 700;
+    }
+
+    .article-detail h1 {
+      margin: 14px 0;
+      font-size: clamp(28px, 5vw, 42px);
+      line-height: 1.25;
+      overflow-wrap: anywhere;
+    }
+
+    .detail-meta {
+      color: #64748b;
+      font-size: 14px;
+      margin-bottom: 24px;
+    }
+
+    .detail-image {
+      display: block;
+      width: 100%;
+      max-height: 480px;
+      object-fit: cover;
+      border-radius: 12px;
+      margin-bottom: 28px;
+    }
+
+    .detail-summary {
+      font-size: 19px;
+      line-height: 1.8;
+      color: #475569;
+      font-weight: 500;
+    }
+
+    .detail-content {
+      margin-top: 24px;
+      font-size: 17px;
+      line-height: 1.9;
+      overflow-wrap: anywhere;
+    }
+
+    .detail-content p {
+      margin: 0 0 18px;
+      white-space: pre-wrap;
+    }
+
+    .detail-content img {
+      max-width: 100%;
+      height: auto;
+    }
+
+    .detail-status {
+      padding: 24px;
+      background: #fff;
+      border-radius: 12px;
+    }
+
+    .comments-section { margin-top: 42px; padding-top: 28px; border-top: 1px solid #e0e7e3; }
+    .comments-heading-row { display: flex; gap: 12px; align-items: center; justify-content: space-between; flex-wrap: wrap; }
+    .comments-heading-row h2 { margin: 0 0 18px; font-size: 26px; }
+    .comment-count { color: #64748b; font-size: 14px; }
+    .comment-status { min-height: 1.4em; margin: 0 0 10px; color: #087354; font-size: 14px; }
+    .comment-status.error { color: #b42318; }
+    .comment-login-hint { padding: 14px 16px; background: #f3f8f5; border-radius: 10px; color: #455b4e; }
+    .comment-login-hint a { color: #087354; font-weight: 700; }
+    .comment-form { padding: 16px; border: 1px solid #dce6df; border-radius: 12px; background: #fbfdfb; }
+    .main-comment-form { margin-bottom: 24px; }
+    .comment-form textarea { box-sizing: border-box; display: block; width: 100%; min-height: 76px; padding: 12px; border: 1px solid #d5e0da; border-radius: 9px; background: #fff; font: inherit; resize: vertical; }
+    .comment-form textarea:focus { outline: 2px solid #087354; outline-offset: 1px; }
+    .comment-form-actions { display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap; margin-top: 10px; }
+    .comment-form-note { color: #64748b; font-size: 12px; }
+    .comment-submit { padding: 9px 14px; border: 0; border-radius: 8px; background: #087354; color: #fff; font: inherit; font-weight: 700; cursor: pointer; }
+    .comment-submit:disabled { opacity: .55; cursor: wait; }
+    .comment-cancel-reply { margin-right: 8px; border: 0; background: transparent; color: #475569; font: inherit; cursor: pointer; }
+    .comment-card { margin: 16px 0; padding: 16px; border: 1px solid #e0e7e3; border-radius: 12px; background: #fff; }
+    .comment-author-row { display: flex; align-items: center; gap: 10px; }
+    .comment-avatar { flex: 0 0 36px; display: inline-flex; width: 36px; height: 36px; align-items: center; justify-content: center; border-radius: 50%; background: #e5f2e9; color: #087354; font-weight: 700; }
+    .comment-author-row strong { display: block; color: #20342a; }
+    .comment-author-row time { display: block; margin-top: 3px; color: #64748b; font-size: 12px; }
+    .comment-content { margin: 14px 0; white-space: pre-wrap; overflow-wrap: anywhere; line-height: 1.65; }
+    .deleted-comment-content { color: #7b8794; font-style: italic; }
+    .comment-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+    .comment-action { padding: 4px 0; border: 0; background: transparent; color: #087354; font: inherit; font-size: 13px; font-weight: 700; cursor: pointer; }
+    .comment-action.danger-text { color: #b42318; }
+    .reaction-row { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 10px; }
+    .reaction-button { display: inline-flex; gap: 4px; align-items: center; padding: 5px 8px; border: 1px solid #dce6df; border-radius: 999px; background: #fff; color: #475569; font-size: 12px; cursor: pointer; }
+    .reaction-button b { color: #64748b; font-weight: 600; }
+    .reaction-button.selected { border-color: #087354; background: #eaf6ef; color: #07583f; }
+    .reaction-button:disabled { opacity: .55; cursor: wait; }
+    .read-only-reactions { margin-top: 4px; }
+    .reaction-readonly { padding: 4px 7px; border-radius: 999px; background: #f3f6f4; font-size: 12px; }
+    .comment-replies { margin: 14px 0 0 20px; padding-left: 14px; border-left: 2px solid #e4eee7; }
+    .reply-form-slot { margin-top: 10px; }
+    .reply-comment-form { padding: 12px; }
+    .comments-empty { padding: 26px 18px; border: 1px dashed #d5e0da; border-radius: 12px; color: #64748b; text-align: center; }
+    .comments-empty strong { color: #263c30; }
+    .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border: 0; }
+    @media (max-width: 600px) { .comment-replies { margin-left: 8px; padding-left: 8px; } .comment-card { padding: 12px; } .reaction-button { font-size: 11px; } }
+
+    @media (max-width: 600px) {
+      .article-detail {
+        margin: 20px auto;
+        padding: 20px;
+      }
+    }
+  </style>
+  <script src="/js/article.js" defer></script>
+</head>
+<body>
+  <header class="site-header">
+    <div class="container header-inner">
+      <a class="logo" href="/">TIN MỚI<span>.</span></a>
+      <nav>
+        <a href="/">Trang chủ</a>
+        <a href="/#latest">Tin mới</a>
+        <a href="/user-login.html">Đăng nhập</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="container">
+    <article id="article-detail" class="article-detail">
+      <p class="detail-status">Đang tải bài viết...</p>
+    </article>
+  </main>
+
+  <footer>
+    <div class="container">© 2026 Tin Mới — Cổng thông tin</div>
+  </footer>
+</body>
+</html>

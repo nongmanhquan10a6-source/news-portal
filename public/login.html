@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Đăng nhập quản trị - Tin Mới</title>
+  <link rel="stylesheet" href="/css/style.css">
+  <style>
+    .login-wrapper{max-width:440px;margin:70px auto;padding:32px;background:#fff;border:1px solid #e0e7e3;border-radius:16px;box-shadow:0 8px 28px rgba(0,0,0,.06)}
+    .login-wrapper h1{margin-bottom:8px;font-size:28px}
+    .login-form label{display:block;margin:20px 0 8px;font-weight:700}
+    .login-form input{box-sizing:border-box;width:100%;padding:12px;border:1px solid #cbd5d1;border-radius:8px;font-size:16px}
+    .login-form button,.action-link{display:block;box-sizing:border-box;width:100%;margin-top:20px;padding:13px;border:0;border-radius:8px;background:#086b50;color:#fff;text-align:center;text-decoration:none;font-size:16px;font-weight:700;cursor:pointer}
+    #login-message{margin-top:16px;overflow-wrap:anywhere}
+    .login-links{display:flex;justify-content:space-between;gap:12px;margin-top:16px;flex-wrap:wrap}
+  </style>
+</head>
+<body>
+<header class="site-header"><div class="container header-inner"><a class="logo" href="/">TIN MỚI<span>.</span></a><nav><a href="/">Trang chủ</a></nav></div></header>
+<main class="container">
+  <section class="login-wrapper">
+    <p class="eyebrow">KHU VỰC QUẢN TRỊ</p>
+    <h1>Đăng nhập admin</h1>
+    <p>Đăng nhập để quản lý bài viết trên cổng thông tin.</p>
+    <form id="login-form" class="login-form">
+      <label for="username">Tên đăng nhập</label>
+      <input id="username" name="username" autocomplete="username" required>
+      <label for="password">Mật khẩu</label>
+      <input id="password" name="password" type="password" autocomplete="current-password" required>
+      <button type="submit">Đăng nhập</button>
+      <p id="login-message" role="status" aria-live="polite"></p>
+    </form>
+    <div class="login-links"><a href="/forgot-password.html">Quên mật khẩu?</a><a href="/register.html">Tạo tài khoản người dùng</a></div>
+  </section>
+</main>
+<script>
+const form=document.getElementById("login-form");
+const message=document.getElementById("login-message");
+form.addEventListener("submit",async(event)=>{
+  event.preventDefault();
+  message.textContent="Đang kiểm tra tài khoản...";
+  try{
+    const response=await fetch("/api/auth/login",{method:"POST",headers:{"Content-Type":"application/json"},credentials:"same-origin",body:JSON.stringify({username:form.username.value.trim(),password:form.password.value})});
+    const result=await response.json();
+    if(!response.ok||!result.success)throw new Error(result.message||"Đăng nhập thất bại.");
+    sessionStorage.setItem("tinMoiActiveRole", "admin");
+    window.location.href="/index.html?as=admin";
+  }catch(error){message.textContent=error.message;}
+});
+</script>
+</body>
+</html>

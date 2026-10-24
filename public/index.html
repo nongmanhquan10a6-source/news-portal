@@ -1,0 +1,62 @@
+
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tin Mới - Cổng thông tin</title>
+  <link rel="stylesheet" href="/css/style.css">
+  <script src="/js/auth-nav.js" defer></script>
+  <script src="/js/main.js" defer></script>
+</head>
+<body>
+  <header class="site-header">
+    <div class="container header-inner">
+      <a class="logo" href="/">TIN MỚI<span>.</span></a>
+      <nav>
+        <a href="/">Trang chủ</a>
+        <a href="#latest">Tin mới</a>
+        <a href="/user-login.html">Đăng nhập</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="container">
+    <section class="hero">
+      <p class="eyebrow">CẬP NHẬT MỖI NGÀY</p>
+      <h1>Thông tin mới,<br>góc nhìn đa chiều.</h1>
+      <p>Khám phá những tin tức và câu chuyện đáng chú ý.</p>
+    </section>
+
+    <section id="latest" class="news-section">
+      <div class="section-heading">
+        <div>
+          <p class="eyebrow">ĐỌC GÌ HÔM NAY?</p>
+          <h2>Tin mới nhất</h2>
+        </div>
+        <span id="article-count">Đang tải...</span>
+      </div>
+
+      <div class="news-tools">
+  <input
+    id="article-search"
+    type="search"
+    placeholder="Tìm kiếm tin tức..."
+    aria-label="Tìm kiếm tin tức"
+  >
+  <select id="category-filter" aria-label="Lọc danh mục">
+    <option value="">Tất cả danh mục</option>
+  </select>
+</div>
+
+<div id="article-list" class="article-grid">
+  <p>Đang tải bài viết...</p>
+</div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="container">© 2026 Tin Mới — Cổng thông tin</div>
+  </footer>
+</body>
+</html>

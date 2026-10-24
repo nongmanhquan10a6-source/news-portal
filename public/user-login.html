@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Đăng nhập - Tin Mới</title><link rel="stylesheet" href="/css/style.css">
+<style>
+.auth-card{max-width:440px;margin:48px auto;padding:30px;background:#fff;border:1px solid #e0e7e3;border-radius:16px;box-shadow:0 8px 28px #0000000a}
+.auth-card label{display:block;margin:16px 0 7px;font-weight:700}
+.auth-card input{box-sizing:border-box;width:100%;padding:12px;border:1px solid #cbd5d1;border-radius:8px;font-size:16px}
+.auth-card button{width:100%;margin-top:20px;padding:13px;border:0;border-radius:8px;background:#086b50;color:white;font-weight:700;cursor:pointer}
+.password-field{position:relative}
+.password-field input{padding-right:38px}
+.auth-card .password-toggle{position:absolute;top:50%;right:10px;display:grid;width:18px;height:18px;margin:0;padding:0;transform:translateY(-50%);place-items:center;border:0;border-radius:0;background:transparent;color:#56645e;cursor:pointer}
+.password-toggle svg{width:12px;height:12px;fill:none;stroke:currentColor;stroke-linecap:round;stroke-linejoin:round;stroke-width:2}
+.password-toggle .eye-off{display:none}
+.password-toggle[aria-pressed="true"] .eye{display:none}
+.password-toggle[aria-pressed="true"] .eye-off{display:block}
+#message{overflow-wrap:anywhere}
+</style></head>
+<body>
+<header class="site-header"><div class="container header-inner"><a class="logo" href="/">TIN MỚI<span>.</span></a><nav><a href="/">Trang chủ</a></nav></div></header>
+<main class="container"><section class="auth-card">
+<p class="eyebrow">TÀI KHOẢN NGƯỜI DÙNG</p><h1>Đăng nhập</h1>
+<form id="login-form">
+<label for="username">Tên tài khoản hoặc email</label><input id="username" name="username" autocomplete="username" required>
+<label for="password">Mật khẩu</label><div class="password-field"><input id="password" name="password" type="password" autocomplete="current-password" required><button class="password-toggle" type="button" aria-label="Hiện mật khẩu" aria-pressed="false" aria-controls="password"><svg class="eye" viewBox="0 0 24 24" aria-hidden="true"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7-10-7-10-7Z"></path><circle cx="12" cy="12" r="3"></circle></svg><svg class="eye-off" viewBox="0 0 24 24" aria-hidden="true"><path d="m3 3 18 18M10.6 10.6a2 2 0 0 0 2.8 2.8"></path><path d="M9.9 5.2A10.8 10.8 0 0 1 12 5c6.4 0 10 7 10 7a14.8 14.8 0 0 1-3.1 3.8M6.2 6.2C3.5 8 2 12 2 12s3.6 7 10 7a10.5 10.5 0 0 0 4.2-.9"></path></svg></button></div>
+<button type="submit">Đăng nhập</button><p id="message" role="status" aria-live="polite"></p>
+</form>
+<p><a href="/forgot-password.html">Quên mật khẩu?</a></p>
+<p>Chưa có tài khoản? <a href="/register.html">Đăng ký</a></p>
+<p>Quản trị viên? <a href="/login.html">Đăng nhập admin</a></p>
+</section></main>
+<script>
+const form=document.getElementById("login-form"),message=document.getElementById("message");
+const passwordInput=document.getElementById("password"),passwordToggle=document.querySelector(".password-toggle");
+passwordToggle.addEventListener("click",()=>{
+ const isVisible=passwordInput.type==="text";
+ passwordInput.type=isVisible?"password":"text";
+ passwordToggle.setAttribute("aria-pressed",String(!isVisible));
+ passwordToggle.setAttribute("aria-label",isVisible?"Hiện mật khẩu":"Ẩn mật khẩu");
+});
+form.addEventListener("submit",async(e)=>{
+ e.preventDefault();message.textContent="Đang đăng nhập...";
+ try{
+  const r=await fetch("/api/auth/user/login",{method:"POST",headers:{"Content-Type":"application/json"},credentials:"same-origin",body:JSON.stringify({username:form.username.value.trim(),password:form.password.value})});
+  const d=await r.json();if(!r.ok||!d.success)throw new Error(d.message||"Đăng nhập thất bại.");
+  sessionStorage.setItem("tinMoiActiveRole", "user");
+  window.location.href="/?as=user";
+ }catch(err){message.textContent=err.message;}
+});
+</script></body></html>

@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Quản trị Tin Mới</title>
+  <link rel="stylesheet" href="/css/style.css">
+  <script src="/js/admin.js?v=20261024-pagination2" defer></script>
+  <style>
+    #logout-btn { border: 1px solid #0b7657; border-radius: 8px; padding: 8px 12px; background: #fff; color: #0b7657; font: inherit; cursor: pointer; }
+    .admin-panel { margin: 32px 0; padding: 24px; background: #fff; border: 1px solid var(--border); border-radius: 16px; }
+    .admin-panel h2 { margin-top: 0; }
+    .admin-table-wrap { width: 100%; overflow-x: auto; }
+    .admin-table { width: 100%; border-collapse: collapse; min-width: 680px; }
+    .admin-table th, .admin-table td { padding: 12px; border-bottom: 1px solid var(--border); text-align: left; vertical-align: top; }
+    .admin-table th { background: #f4f8f5; color: #244a39; font-size: 13px; }
+    .admin-table td { font-size: 14px; overflow-wrap: anywhere; }
+    .admin-actions { display: flex; flex-wrap: wrap; gap: 8px; }
+    .admin-action { border: 1px solid #0b7657; border-radius: 7px; padding: 7px 10px; background: white; color: #0b7657; font: inherit; cursor: pointer; }
+    .admin-action.danger { border-color: #b42318; color: #b42318; }
+    .admin-action:disabled { opacity: .55; cursor: wait; }
+    .admin-message { min-height: 1.5em; color: #087354; overflow-wrap: anywhere; }
+    .admin-message.error { color: #b42318; }
+    .status-pill { display: inline-block; border-radius: 999px; padding: 4px 8px; font-size: 12px; background: #e8f5ec; color: #236344; }
+    .status-pill.banned { background: #feeceb; color: #a32020; }
+    .admin-intro { color: var(--muted); }
+    .admin-form .form-actions { display:flex; flex-wrap:wrap; gap:10px; align-items:center; }
+    .admin-form .submit-button { margin-top: 24px; }
+    .admin-form .secondary-button { margin-top: 24px; padding: 11px 18px; border: 1px solid var(--border); border-radius: 8px; background:#fff; cursor:pointer; font:inherit; }
+    .comment-excerpt { max-width: 420px; white-space: pre-wrap; }
+    @media (max-width:600px) { .admin-panel { padding: 16px; } }
+  </style>
+</head>
+<body>
+  <header class="site-header">
+    <div class="container header-inner">
+      <a class="logo" href="/">TIN MỚI<span>.</span></a>
+      <nav>
+        <a href="/">Trang chủ</a>
+        <a href="/admin-users.html">Quản lý tài khoản</a>
+        <button class="nav-auth-button" id="logout-btn" type="button">Đăng xuất</button>
+      </nav>
+    </div>
+  </header>
+
+  <main class="container news-section">
+    <p class="eyebrow">TRUNG TÂM QUẢN TRỊ</p>
+    <h1>Quản trị nội dung</h1>
+    <p class="admin-intro">Tại đây bạn có thể đăng bài viết mới và quản lý các bài viết đã tạo. Quản lý tài khoản thành viên nằm ở mục riêng trên thanh menu trang chủ.</p>
+    <p id="global-message" class="admin-message" role="status" aria-live="polite"></p>
+
+    <section class="admin-panel" aria-labelledby="article-form-heading">
+      <h2 id="article-form-heading">Đăng bài viết mới</h2>
+      <p class="admin-intro">Các trường có dấu * là bắt buộc. Chỉ bài đã xuất bản mới hiển thị công khai.</p>
+      <form id="article-form" class="admin-form">
+        <label for="title">Tiêu đề bài viết *</label>
+        <input id="title" name="title" required maxlength="200">
+
+        <label for="slug">Đường dẫn nội bộ (slug) *</label>
+        <input id="slug" name="slug" required placeholder="dau-duong-xo-cho" pattern="[a-z0-9]+(-[a-z0-9]+)*" title="Chỉ dùng chữ thường không dấu, số và dấu gạch ngang">
+
+        <label for="sourceUrl">Link video YouTube hoặc nguồn tham khảo</label>
+        <input id="sourceUrl" name="sourceUrl" type="url" placeholder="https://www.youtube.com/watch?v=...">
+
+        <label for="summary">Mô tả ngắn</label>
+        <textarea id="summary" name="summary" rows="3" maxlength="1000"></textarea>
+
+        <label for="content">Nội dung bài viết *</label>
+        <textarea id="content" name="content" rows="8" required maxlength="100000"></textarea>
+
+        <label for="imageUrl">Đường dẫn ảnh (không bắt buộc)</label>
+        <input id="imageUrl" name="imageUrl" type="url" placeholder="https://example.com/image.jpg">
+
+        <label for="category">Danh mục</label>
+        <input id="category" name="category" list="category-options" value="Thời sự" maxlength="60" placeholder="Nhập hoặc chọn danh mục">
+        <datalist id="category-options">
+          <option value="Thời sự"></option>
+          <option value="Công nghệ"></option>
+          <option value="Giáo dục"></option>
+          <option value="Đời sống"></option>
+          <option value="Thể thao"></option>
+          <option value="Tin mới"></option>
+        </datalist>
+
+        <label for="author">Tác giả</label>
+        <input id="author" name="author" value="Ban biên tập" required maxlength="120">
+
+        <label for="status">Trạng thái</label>
+        <select id="status" name="status">
+          <option value="draft">Lưu bản nháp</option>
+          <option value="published">Xuất bản ngay</option>
+        </select>
+
+        <div class="form-actions">
+          <button id="article-submit" type="submit" class="submit-button">Lưu bài viết</button>
+          <button id="cancel-edit-btn" type="button" class="secondary-button" hidden>Hủy sửa</button>
+        </div>
+        <p id="form-message" class="admin-message" role="status" aria-live="polite"></p>
+      </form>
+    </section>
+
+    <section class="admin-panel" aria-labelledby="articles-heading">
+      <h2 id="articles-heading">Quản lý bài viết</h2>
+      <p class="admin-intro">Danh sách gồm cả bài đã xuất bản và bản nháp.</p>
+      <div class="admin-table-wrap">
+        <table class="admin-table">
+          <thead><tr><th>Tiêu đề / slug</th><th>Trạng thái</th><th>Cập nhật</th><th>Thao tác</th></tr></thead>
+          <tbody id="admin-article-list"><tr><td colspan="4">Đang tải bài viết...</td></tr></tbody>
+        </table>
+      </div>
+      <div id="admin-article-pagination" class="admin-article-pagination"></div>
+    </section>
+
+  </main>
+</body>
+</html>

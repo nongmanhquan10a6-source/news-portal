@@ -1,0 +1,28 @@
+
+node_modules/
+.env
+
+# Environment variables and secrets
+.env
+.env.*
+!.env.example
+
+# Dependencies
+node_modules/
+
+# Logs
+*.log
+npm-debug.log*
+
+# Editor files
+.vscode/
+.DS_Store
+
+# Old Compose backups
+docker-compose.backup.yml
+docker-compose.before-loki.yml
+docker-compose.pre-hardening.yml
+*.save
+
+# Nested duplicate project copy
+news-portal/
